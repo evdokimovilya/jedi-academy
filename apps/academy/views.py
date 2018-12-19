@@ -44,7 +44,7 @@ def all_jedis(request):
 	if 'filter' in request.GET.keys():
 		filter = request.GET.get('filter')
 		if filter == 'top':
-			jedis = Jedi.objects.annotate(count_pad=Count('jedi_candidates')).filter(count_pad__gte=1)
+			jedis = Jedi.objects.annotate(count_pad=Count('jedi_candidates')).filter(count_pad__gte=2)
 	else:
 		jedis = Jedi.objects.all()
 
