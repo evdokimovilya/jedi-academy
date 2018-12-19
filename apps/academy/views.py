@@ -116,7 +116,7 @@ def accept_candidate(request):
 				'You was accepted to padawans',
 				'Congratulations!',
 				'from@example.com',
-				['evdokimovilya@yandex.ru'],
+				[candidate.email],
 				fail_silently=False,
 			)
 
