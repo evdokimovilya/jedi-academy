@@ -114,7 +114,7 @@ STATICFILES_DIRS = [
 	os.path.join(BASE_DIR, 'template_static/'),
 ]
 
-
+HOST = 'http://jedis-academy.herokuapp.com/'
 
 try:
 	from .local_settings import *
