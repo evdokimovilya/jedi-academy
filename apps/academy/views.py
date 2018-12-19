@@ -120,9 +120,7 @@ def accept_candidate(request):
 				fail_silently=False,
 			)
 
-			return JsonResponse({})
-	else:
-		return JsonResponse({})
+	return JsonResponse({})
 
 def delete_padawan(request):
 	"""Delete padawan from jedi"""
