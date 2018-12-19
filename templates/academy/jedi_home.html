@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 text-center">
+            <h2>Jedi - {{ jedi.get_name }} ({{ jedi.planet.name }})</h2>
+        </div>
+    </div>
+    <div class="row justify-content-md-center" id="jedi_home">
+        <div class="col-md-4 text-center"><h5>Candidates</h5>
+
+            <ul class="list-group">
+                <template v-for="candidate in candidates">
+                    <li class="list-group-item">
+                        <a v-bind:href="'/candidates/home/'+candidate.id+'/'">${candidate.first_name} ${candidate.last_name}</a></li>
+                    <button class="fas fa-arrow-circle-right" v-on:click="AcceptCandidate(candidate.id)"></button>
+                </template>
+            </ul>
+            <p style="color: red">${my_err}</p>
+        </div>
+
+        <div class="col-md-4 text-center"><h5>Padawans</h5>
+            <ul class="list-group">
+                <template v-for="padawan in padawans">
+                    <li class="list-group-item">
+                        <a v-bind:href="'/candidates/home/'+padawan.id+'/'">${padawan.first_name} ${padawan.last_name}</a></li>
+                    <button class="fas fa-arrow-circle-left" v-on:click="DeletePadawan(padawan.id)"></button>
+                </template>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        var pam = new Vue({
+            el: '#jedi_home',
+            delimiters: ['${', '}'],
+            data: {
+                jedi_padawans: null,
+                candidates: null,
+                afdf:3,
+                padawans: null,
+                jedi_pk:{{ jedi.pk }},
+                my_err: null,
+            },
+            mounted: function () {
+                this.getCandidates();
+                this.getPadawans();
+            },
+            methods: {
+                getCandidates: function () {
+                    this.loading = true;
+                    this.$http.get('/api/get_candidates/', {
+                        params: {
+                            jedi_pk: this.jedi_pk,
+                        }
+                    })
+                        .then((response) => {
+                            this.candidates = response.data.candidates;
+                            this.jedi_padawans = response.data.jedi_padawans;
+                            this.loading = false;
+                        })
+                },
+                getPadawans: function () {
+                    this.loading = true;
+                    this.$http.get('/api/get_padawans/', {
+                        params: {
+                            jedi_pk: this.jedi_pk,
+                        }
+                    })
+                        .then((response) => {
+                            this.padawans = response.data.padawans;
+                            this.jedi_padawans = response.data.jedi_padawans;
+                            this.loading = false;
+                        })
+                },
+                AcceptCandidate: function (candidate_pk) {
+                    if (this.jedi_padawans < 3) {
+                        this.loading = true;
+                        this.$http.get('/api/accept_candidate/', {
+                            params: {
+                                jedi_pk: this.jedi_pk,
+                                candidate_pk: candidate_pk,
+                            }
+                        })
+                            .then((response) => {
+                                this.getCandidates();
+                                this.getPadawans();
+                                this.loading = false;
+                            })
+
+                    } else {
+                        this.my_err = 'You can have only three padawans!';
+                        this.loading = false;
+                    }
+                },
+
+                DeletePadawan: function (padawan_pk) {
+                    this.loading = true;
+                    this.$http.get('/api/delete_padawan/', {
+                        params: {
+                            padawan_pk: padawan_pk,
+                        }
+                    })
+                        .then((response) => {
+                            this.getCandidates();
+                            this.getPadawans();
+                            this.my_err = null;
+                            this.loading = false;
+
+                        })
+                },
+            }
+        })
+    </script>
+
+{% endblock %}

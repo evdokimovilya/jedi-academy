@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 text-center">
+            <h2>All jedis list</h2>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 text-center"><h5></h5>
+
+            <ul class="list-group">
+                <button class="btn" onclick="window.location.replace('?filter=top')">Only more then one padawan</button>
+                <button class="btn" onclick="window.location.replace('/jedis/all_jedis/')">Show all</button>
+                {% for jedi in jedis %}
+                    <li class="list-group-item"><a href="{{ jedi.get_link }}">{{ jedi.get_name }}</a> - {{ jedi.get_padawans|length }} padawans</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+
+    </div>
+
+
+
+{% endblock content %}

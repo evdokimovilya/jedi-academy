@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 text-center">
+            <h2>Candidate - {{ candidate.get_name }}</h2>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4 text-center"><h5>Test results</h5>
+            <i class="fas fa-check"></i> - answer correct
+            <i class="fas fa-times"></i> - answer not correct
+            <ul class="list-group">
+                {% for answer in answers %}
+                    <li class="list-group-item">{{ answer.question.text }} - {% if answer.correct %}<i class="fas fa-check">{% else %} <i class="fas fa-times"></i>{% endif %}</i></li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        <div class="col-md-3 text-center"><h5>Info</h5>
+            <p>Jedi -  <a href="{{ candidate.jedi.get_link }}">{{candidate.jedi.get_name }}</a></p>
+            <p>Planet -  {{ candidate.planet.name }}</p>
+        </div>
+
+    </div>
+
+
+
+{% endblock content %}

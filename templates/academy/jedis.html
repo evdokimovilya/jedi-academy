@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-6 col-">
+            <h2>Choose jedi</h2>
+            <form id="select_jedi_form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="jedi_pk">All jedis</label>
+                    <select class="form-control" name="jedi_pk" id="select_jedi">
+                        {% for jedi in jedis %}
+                            <option value="{{ jedi.pk }}">{{ jedi.first_name  }} {% if jedi.last_name %} {{ jedi.last_name }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="sub_b">Next</button>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <script type="text/javascript">
+    $("#sub_b").click(function(e){
+        e.preventDefault();
+        jedi_pk = $("#select_jedi").children("option:selected").val();
+        window.location.replace('/jedis/home/'+jedi_pk+'/');
+});
+    </script>
+
+{% endblock %}
+

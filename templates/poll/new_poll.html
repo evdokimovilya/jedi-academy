@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-6 col-" id="poll">
+            <h2>{{ poll.name }}</h2>
+            <form v-on:submit.prevent="sendAnswer()">
+                <div class="form-group">
+                    <h3>${question.text}</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="poll_answers" id="first_answer" v-model="poll_answers"
+                               value="1" checked>
+                        <label class="form-check-label" for="first_answer">
+                            True
+                        </label>
+                    </div>
+
+                    <div class="form-check" id="poll">
+                        <input class="form-check-input" type="radio" name="poll_answers" id="second_answer"  v-model="poll_answers"
+                               value="0">
+                        <label class="form-check-label" for="second_answer">
+                            False
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Next</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        new Vue({
+
+
+            el: '#poll',
+            delimiters: ['${', '}'],
+            data: {
+                poll_answers:null,
+                question: null,
+                loading: false,
+                currentArticle: {},
+                message: null,
+                last_question:0,
+                candidate_pk:{{ candidate_pk }},
+                poll_pk:{{ poll_pk }},
+            },
+            mounted: function () {
+                this.getQuestion();
+            },
+            methods: {
+                getQuestion: function () {
+                    this.loading = true;
+                    this.$http.get('/poll/question/', {
+                        params:{
+                            poll_pk: this.poll_pk,
+                            last_question: this.last_question,
+                        }
+                    })
+                        .then((response) => {
+                            if (response.data.end === true) {
+                                this.loading = false;
+                                window.location.href = '/candidates/home/'+this.candidate_pk+'/'
+
+                            }
+                            else {
+                                this.question = response.data;
+                                this.loading = false;
+                                this.last_question = this.last_question + 1;
+                            }
+                        })
+                },
+                sendAnswer: function () {
+                    this.loading = true;
+                    this.$http.get('/poll/answer/', {
+                        params:{
+                            question_pk: this.question.pk,
+                            poll_answer: this.poll_answers,
+                            candidate_pk: this.candidate_pk,
+                        }
+                    })
+                        .then((response) => {
+                            this.loading = false;
+                            this.getQuestion();
+                        })
+                },
+            }
+        });
+
+
+    </script>
+{% endblock %}

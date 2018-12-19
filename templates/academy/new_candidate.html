@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-6 col-">
+            <h2>Add new candidate</h2>
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Email address</label>
+                    <input type="email" class="form-control" name="email"
+                           placeholder="name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" name="first_name"
+                           placeholder="Luk" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" name="last_name"
+                           placeholder="Skywalker" required>
+                </div>
+                <div class="form-group">
+                    <label for="planet">Planet</label>
+                    <select class="form-control" name="planet" id="planet">
+                        {% for planet in planets %}
+                            <option value="{{ planet.pk }}">{{ planet.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" class="form-control" name="age"
+                           placeholder="18" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Next</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
